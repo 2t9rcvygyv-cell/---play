@@ -1,0 +1,653 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080811">
+<title>ｌｚ PLAY | Game Universe</title>
+
+<style>
+:root {
+  --bg:#080811;
+  --panel:#121222;
+  --border:#292944;
+  --purple:#9874ff;
+  --blue:#55c9ff;
+  --white:#f5f3ff;
+  --muted:#9694ae;
+}
+* {box-sizing:border-box}
+html {scroll-behavior:smooth}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--white);
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+}
+button,input {font:inherit}
+button {cursor:pointer}
+header {
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:#080811ed;
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid var(--border);
+  padding:15px 5%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo {
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:2px;
+  background:linear-gradient(90deg,#a78bfa,#55c9ff);
+  color:transparent;
+  background-clip:text;
+}
+.controls {display:flex;gap:8px}
+.small-btn {
+  border:1px solid var(--border);
+  background:#17172a;
+  color:white;
+  padding:9px 12px;
+  border-radius:9px;
+}
+main {max-width:1000px;margin:auto;padding:20px}
+.hero {
+  padding:65px 15px;
+  text-align:center;
+  border:1px solid var(--border);
+  border-radius:25px;
+  background:
+    radial-gradient(ellipse at 50% 0%,#5d3d963d,transparent 65%),
+    #10101d;
+  animation:appear .8s ease;
+}
+.hero small {color:var(--blue);letter-spacing:4px}
+.hero h1 {
+  font-size:clamp(42px,10vw,76px);
+  margin:20px 0;
+  line-height:1.1;
+}
+.gradient {
+  background:linear-gradient(90deg,#a78bfa,#55c9ff);
+  color:transparent;
+  background-clip:text;
+}
+.hero p {color:var(--muted);line-height:1.8}
+.primary {
+  background:linear-gradient(100deg,#8d66ff,#46baff);
+  border:0;
+  padding:14px 25px;
+  border-radius:12px;
+  color:white;
+  font-weight:bold;
+  margin-top:15px;
+  box-shadow:0 5px 25px #7650ff40;
+  transition:.25s;
+}
+.primary:active {transform:scale(.96)}
+.section-title {
+  margin:42px 0 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.section-title h2 {font-size:22px}
+.section-title span {color:var(--muted);font-size:12px}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+.card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:20px;
+  transition:.3s;
+  animation:appear .6s ease;
+}
+.card:active {transform:scale(.97)}
+.card .emoji {font-size:35px}
+.card h3 {margin:12px 0 7px}
+.card p {color:var(--muted);font-size:13px;line-height:1.5}
+.card button {
+  width:100%;
+  background:#24213d;
+  border:1px solid #504078;
+  padding:11px;
+  color:white;
+  border-radius:9px;
+  margin-top:10px;
+}
+.panel {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:22px;
+  text-align:center;
+  margin:18px 0;
+  animation:appear .4s ease;
+}
+.panel h2 {margin-top:5px}
+.muted {color:var(--muted);font-size:13px}
+input {
+  background:#080811;
+  border:1px solid #41415d;
+  color:white;
+  border-radius:9px;
+  padding:13px;
+  width:100%;
+  max-width:280px;
+  margin:7px 0;
+  outline:none;
+}
+input:focus {border-color:var(--purple)}
+.game-btn {
+  background:#272341;
+  border:1px solid #62508f;
+  border-radius:10px;
+  padding:13px 18px;
+  color:white;
+  margin:5px;
+  transition:.2s;
+}
+.game-btn:active {transform:scale(.92)}
+.result {
+  color:#a78bfa;
+  font-weight:bold;
+  min-height:28px;
+  margin:15px 0;
+}
+.hidden {display:none!important}
+.score {font-size:25px;color:var(--blue)}
+#reaction {
+  width:100%;
+  height:135px;
+  border:0;
+  border-radius:14px;
+  color:white;
+  background:#4a315d;
+  font-size:19px;
+  font-weight:bold;
+}
+#reaction.ready {background:#15835b}
+#reaction.wait {background:#a33c4c}
+#reaction.go {background:#138b66}
+.memory-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+  max-width:340px;
+  margin:20px auto;
+}
+.memory-cell {
+  aspect-ratio:1;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#22213b;
+  color:white;
+  font-size:26px;
+}
+.memory-cell.open {background:#51407c}
+.leader-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:13px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+}
+.leader-row:first-child {color:#ffd777}
+footer {
+  text-align:center;
+  padding:35px 10px;
+  color:#6e6b86;
+  font-size:12px;
+}
+@keyframes appear {
+  from {opacity:0;transform:translateY(15px)}
+  to {opacity:1;transform:translateY(0)}
+}
+@keyframes glow {
+  0%,100% {box-shadow:0 0 10px #8c65ff33}
+  50% {box-shadow:0 0 28px #8c65ff88}
+}
+@media(max-width:500px) {
+  main {padding:14px}
+  .grid {grid-template-columns:1fr 1fr;gap:9px}
+  .card {padding:13px}
+  .card h3 {font-size:15px}
+  .card p {font-size:11px}
+  .hero {padding:48px 10px}
+  header {padding:13px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">ｌｚ PLAY</div>
+  <div class="controls">
+    <button class="small-btn" onclick="toggleMusic()" id="musicBtn">♫ OFF</button>
+    <button class="small-btn" onclick="toggleLang()" id="langBtn">EN</button>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <small>WELCOME TO THE UNIVERSE</small>
+  <h1>PLAY <span class="gradient">WITHOUT</span><br>LIMITS.</h1>
+  <p id="welcome">Thế giới trò chơi của riêng bạn.<br>Chơi game, thử thách và chinh phục!</p>
+  <button class="primary" onclick="showGames()">KHÁM PHÁ GAME →</button>
+</section>
+
+<section class="section-title">
+  <h2 id="gameTitle">🎮 Trò chơi</h2>
+  <span>4 MINI GAMES</span>
+</section>
+
+<section class="grid" id="games">
+
+  <div class="card">
+    <div class="emoji">🔢</div>
+    <h3 id="name1">Đoán số</h3>
+    <p id="desc1">Tìm con số bí mật từ 1 đến 100.</p>
+    <button onclick="openGame('guess')">PLAY →</button>
+  </div>
+
+  <div class="card">
+    <div class="emoji">✊</div>
+    <h3 id="name2">Kéo búa bao</h3>
+    <p id="desc2">Thách đấu với máy tính.</p>
+    <button onclick="openGame('rps')">PLAY →</button>
+  </div>
+
+  <div class="card">
+    <div class="emoji">⚡</div>
+    <h3 id="name3">Phản xạ</h3>
+    <p id="desc3">Kiểm tra tốc độ phản ứng.</p>
+    <button onclick="openGame('reaction')">PLAY →</button>
+  </div>
+
+  <div class="card">
+    <div class="emoji">🧠</div>
+    <h3 id="name4">Lật thẻ</h3>
+    <p id="desc4">Tìm những cặp hình giống nhau.</p>
+    <button onclick="openGame('memory')">PLAY →</button>
+  </div>
+
+</section>
+
+<div id="gameArea" class="hidden">
+
+  <section class="panel">
+    <button class="small-btn" onclick="closeGame()">← MENU</button>
+    <div id="gameContent"></div>
+  </section>
+
+</div>
+
+<section class="section-title">
+  <h2 id="accountTitle">👤 Tài khoản</h2>
+  <span>PLAYER PROFILE</span>
+</section>
+
+<section class="panel" id="accountPanel">
+  <div id="loggedOut">
+    <h2 id="loginTitle">Đăng nhập người chơi</h2>
+    <p class="muted" id="loginDesc">Nhập tên để tham gia thế giới game.</p>
+    <input id="username" maxlength="20" placeholder="Tên người chơi">
+    <br>
+    <button class="primary" onclick="login()">ĐĂNG NHẬP</button>
+  </div>
+
+  <div id="loggedIn" class="hidden">
+    <h2>👑 <span id="playerName"></span></h2>
+    <p class="muted">PLAYER OF ｌｚ PLAY</p>
+    <p>Tổng điểm: <span class="score" id="totalScore">0</span></p>
+    <button class="game-btn" onclick="logout()" id="logoutBtn">Đăng xuất</button>
+  </div>
+</section>
+
+<section class="section-title">
+  <h2 id="leaderTitle">🏆 Bảng xếp hạng</h2>
+  <span>TOP PLAYERS</span>
+</section>
+
+<section class="panel" id="leaderboard">
+  <p class="muted">Chưa có người chơi. Hãy chơi game để ghi điểm!</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="logo">ｌｚ PLAY</div>
+  <p>© 2026 ｌｚ PLAY. ALL RIGHTS RESERVED.</p>
+  <p>PLAY MORE • DREAM BIGGER</p>
+</footer>
+
+<script>
+/* LANGUAGE */
+let lang = "vi";
+
+const translations = {
+vi: {
+welcome:"Thế giới trò chơi của riêng bạn.<br>Chơi game, thử thách và chinh phục!",
+title:"🎮 Trò chơi",
+names:["Đoán số","Kéo búa bao","Phản xạ","Lật thẻ"],
+descs:["Tìm con số bí mật từ 1 đến 100.","Thách đấu với máy tính.","Kiểm tra tốc độ phản ứng.","Tìm những cặp hình giống nhau."],
+account:"👤 Tài khoản",
+login:"Đăng nhập người chơi",
+loginDesc:"Nhập tên để tham gia thế giới game.",
+leader:"🏆 Bảng xếp hạng",
+score:"Tổng điểm",
+empty:"Chưa có người chơi. Hãy chơi game để ghi điểm!"
+},
+en: {
+welcome:"Your own gaming universe.<br>Play, challenge and conquer!",
+title:"🎮 Games",
+names:["Guess Number","Rock Paper Scissors","Reaction Test","Memory Match"],
+descs:["Find the secret number from 1 to 100.","Challenge the computer.","Test your reaction speed.","Find matching pairs."],
+account:"👤 Account",
+login:"Player Login",
+loginDesc:"Enter your name to join the game universe.",
+leader:"🏆 Leaderboard",
+score:"Total score",
+empty:"No players yet. Play to earn points!"
+}
+};
+
+function toggleLang() {
+  lang = lang === "vi" ? "en" : "vi";
+  const t = translations[lang];
+  document.getElementById("langBtn").textContent = lang === "vi" ? "EN" : "VI";
+  document.getElementById("welcome").innerHTML = t.welcome;
+  document.getElementById("gameTitle").textContent = t.title;
+  for(let i=0;i<4;i++) {
+    document.getElementById("name"+(i+1)).textContent=t.names[i];
+    document.getElementById("desc"+(i+1)).textContent=t.descs[i];
+  }
+  document.getElementById("accountTitle").textContent=t.account;
+  document.getElementById("loginTitle").textContent=t.login;
+  document.getElementById("loginDesc").textContent=t.loginDesc;
+  document.getElementById("leaderTitle").textContent=t.leader;
+  document.getElementById("totalLabel")?.replaceChildren(t.score);
+  renderLeaderboard();
+}
+
+/* ACCOUNT */
+let player = localStorage.getItem("lz_player") || "";
+
+function login() {
+  const name = document.getElementById("username").value.trim();
+  if(!name) {
+    alert(lang==="vi"?"Hãy nhập tên!":"Enter your name!");
+    return;
+  }
+  player=name.slice(0,20);
+  localStorage.setItem("lz_player",player);
+  updateAccount();
+}
+function logout() {
+  player="";
+  localStorage.removeItem("lz_player");
+  updateAccount();
+}
+function updateAccount() {
+  document.getElementById("loggedOut").classList.toggle("hidden",!!player);
+  document.getElementById("loggedIn").classList.toggle("hidden",!player);
+  document.getElementById("playerName").textContent=player;
+  const scores=getScores();
+  document.getElementById("totalScore").textContent=scores[player]||0;
+}
+function getScores() {
+  try {return JSON.parse(localStorage.getItem("lz_scores")||"{}")}
+  catch(e){return {}}
+}
+function addScore(points) {
+  if(!player) {
+    alert(lang==="vi"?"Đăng nhập trước để lưu điểm!":"Login first to save your score!");
+    return;
+  }
+  const scores=getScores();
+  scores[player]=(scores[player]||0)+points;
+  localStorage.setItem("lz_scores",JSON.stringify(scores));
+  updateAccount();
+  renderLeaderboard();
+}
+function renderLeaderboard() {
+  const scores=getScores();
+  const entries=Object.entries(scores).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const box=document.getElementById("leaderboard");
+  if(!entries.length) {
+    box.innerHTML='<p class="muted">'+translations[lang].empty+'</p>';
+    return;
+  }
+  box.innerHTML=entries.map((entry,i)=>`
+    <div class="leader-row">
+      <span>${["🥇","🥈","🥉"][i]||"#"+(i+1)} ${escapeHTML(entry[0])}</span>
+      <strong>${entry[1]} XP</strong>
+    </div>
+  `).join("");
+}
+function escapeHTML(s) {
+  return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* MENU */
+function showGames() {
+  document.getElementById("games").scrollIntoView({behavior:"smooth"});
+}
+function openGame(type) {
+  const area=document.getElementById("gameArea");
+  const content=document.getElementById("gameContent");
+  area.classList.remove("hidden");
+  document.getElementById("games").classList.add("hidden");
+  if(type==="guess") startGuess(content);
+  if(type==="rps") startRPS(content);
+  if(type==="reaction") startReaction(content);
+  if(type==="memory") startMemory(content);
+  area.scrollIntoView({behavior:"smooth"});
+}
+function closeGame() {
+  clearTimeout(reactionTimer);
+  document.getElementById("gameArea").classList.add("hidden");
+  document.getElementById("games").classList.remove("hidden");
+  document.getElementById("games").scrollIntoView({behavior:"smooth"});
+}
+
+/* GUESS GAME */
+function startGuess(box) {
+  let secret=Math.floor(Math.random()*100)+1;
+  let tries=0;
+  box.innerHTML=`
+    <h2>🔢 ${lang==="vi"?"ĐOÁN SỐ BÍ MẬT":"GUESS THE NUMBER"}</h2>
+    <p class="muted">1 - 100</p>
+    <input id="guessInput" type="number" min="1" max="100" placeholder="1 - 100">
+    <br>
+    <button class="primary" onclick="guessCheck()">CHECK</button>
+    <div class="result" id="guessResult"></div>
+    <p class="muted" id="guessTries">0</p>
+    <button class="game-btn" onclick="startGuess(document.getElementById('gameContent'))">↻ ${lang==="vi"?"Chơi lại":"Restart"}</button>
+  `;
+  window.guessCheck=function() {
+    const input=document.getElementById("guessInput");
+    const n=Number(input.value);
+    if(!input.value||n<1||n>100) return;
+    tries++;
+    let msg="";
+    if(n===secret) {
+      msg=lang==="vi"?"🎉 CHÍNH XÁC! +20 XP":"🎉 CORRECT! +20 XP";
+      addScore(20);
+      secret=-1;
+    } else if(secret===-1) return;
+    else msg=n<secret?(lang==="vi"?"⬆️ Lớn hơn!":"⬆️ Higher!"):(lang==="vi"?"⬇️ Nhỏ hơn!":"⬇️ Lower!");
+    document.getElementById("guessResult").textContent=msg;
+    document.getElementById("guessTries").textContent="Attempts: "+tries;
+  };
+}
+
+/* ROCK PAPER SCISSORS */
+function startRPS(box) {
+  box.innerHTML=`
+    <h2>✊ ROCK PAPER SCISSORS</h2>
+    <p class="muted">${lang==="vi"?"Chọn vũ khí của bạn":"Choose your weapon"}</p>
+    <div>
+      <button class="game-btn" onclick="playRPS('✊')">✊</button>
+      <button class="game-btn" onclick="playRPS('✋')">✋</button>
+      <button class="game-btn" onclick="playRPS('✌️')">✌️</button>
+    </div>
+    <div class="result" id="rpsResult">VS</div>
+    <p id="rpsScore" class="muted"></p>
+  `;
+  window.playRPS=function(choice) {
+    const options=["✊","✋","✌️"];
+    const cpu=options[Math.floor(Math.random()*3)];
+    let win=choice===cpu?0:
+      ((choice==="✊"&&cpu==="✌️")||(choice==="✋"&&cpu==="✊")||(choice==="✌️"&&cpu==="✋"))?1:-1;
+    document.getElementById("rpsResult").textContent=
+      choice+" VS "+cpu+" | "+(win===0?"DRAW":win===1?"YOU WIN!":"YOU LOSE!");
+    if(win===1) addScore(10);
+    document.getElementById("rpsScore").textContent=
+      win===1?"+10 XP":win===0?"0 XP":"Try again!";
+  };
+}
+
+/* REACTION GAME */
+let reactionTimer;
+function startReaction(box) {
+  box.innerHTML=`
+    <h2>⚡ REACTION TEST</h2>
+    <p class="muted">${lang==="vi"?"Nhấn nút khi màn hình chuyển xanh":"Tap when the screen turns green"}</p>
+    <button id="reaction" class="ready" onclick="reactionClick()">START</button>
+    <div class="result" id="reactionResult"></div>
+  `;
+  let state="ready",start=0;
+  window.reactionClick=function() {
+    const b=document.getElementById("reaction");
+    const r=document.getElementById("reactionResult");
+    if(state==="ready") {
+      state="wait"; b.className="wait"; b.textContent="WAIT...";
+      r.textContent="";
+      reactionTimer=setTimeout(()=>{
+        state="go";start=Date.now();
+        b.className="go";b.textContent="TAP NOW!";
+      },1500+Math.random()*3000);
+    } else if(state==="wait") {
+      clearTimeout(reactionTimer);
+      state="ready";b.className="ready";b.textContent="TOO EARLY!";
+    } else if(state==="go") {
+      const ms=Date.now()-start;
+      state="ready";b.className="ready";b.textContent="PLAY AGAIN";
+      r.textContent=ms+" ms";
+      if(ms<350) addScore(15);
+    }
+  };
+}
+
+/* MEMORY GAME */
+function startMemory(box) {
+  const icons=["🍀","🍎","🌙","⭐","🎮","💎","🔥","🌸"];
+  let cards=[...icons,...icons].sort(()=>Math.random()-.5);
+  let opened=[],matched=[],moves=0,locked=false;
+  box.innerHTML=`
+    <h2>🧠 MEMORY MATCH</h2>
+    <p class="muted">${lang==="vi"?"Tìm 8 cặp hình giống nhau":"Find 8 matching pairs"}</p>
+    <p id="moves">Moves: 0</p>
+    <div class="memory-grid" id="memoryGrid">
+    ${cards.map((x,i)=>`<button class="memory-cell" data-i="${i}" onclick="flipCard(${i})">?</button>`).join("")}
+    </div>
+    <div class="result" id="memoryResult"></div>
+    <button class="game-btn" onclick="startMemory(document.getElementById('gameContent'))">↻ RESTART</button>
+  `;
+  window.flipCard=function(i) {
+    if(locked||matched.includes(i)||opened.includes(i))return;
+    const cells=document.querySelectorAll(".memory-cell");
+    cells[i].textContent=cards[i];
+    cells[i].classList.add("open");
+    opened.push(i);
+    if(opened.length===2) {
+      moves++;
+      document.getElementById("moves").textContent="Moves: "+moves;
+      if(cards[opened[0]]===cards[opened[1]]) {
+        matched.push(...opened);
+        opened=[];
+        if(matched.length===16) {
+          document.getElementById("memoryResult").textContent="🎉 PERFECT! +30 XP";
+          addScore(30);
+        }
+      } else {
+        locked=true;
+        setTimeout(()=>{
+          opened.forEach(j=>{
+            cells[j].textContent="?";
+            cells[j].classList.remove("open");
+          });
+          opened=[];locked=false;
+        },750);
+      }
+    }
+  };
+}
+
+/* MUSIC - GENERATED SOUND */
+let audioContext=null;
+let musicOn=false;
+let musicTimer=null;
+function toggleMusic() {
+  if(!musicOn) {
+    try {
+      const AudioCtx=window.AudioContext||window.webkitAudioContext;
+      if(!AudioCtx) throw new Error("Audio unavailable");
+      audioContext=new AudioCtx();
+      audioContext.resume();
+      musicOn=true;
+      document.getElementById("musicBtn").textContent="♫ ON";
+      playMusic();
+    } catch(e) {
+      alert("Audio is not available on this browser.");
+    }
+  } else {
+    musicOn=false;
+    clearInterval(musicTimer);
+    if(audioContext) audioContext.suspend();
+    document.getElementById("musicBtn").textContent="♫ OFF";
+  }
+}
+function playMusic() {
+  const notes=[261.63,329.63,392,329.63,293.66,349.23,440,349.23];
+  let i=0;
+  function note() {
+    if(!musicOn||!audioContext)return;
+    const osc=audioContext.createOscillator();
+    const gain=audioContext.createGain();
+    osc.type="sine";
+    osc.frequency.value=notes[i%notes.length];
+    gain.gain.setValueAtTime(0.0001,audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.045,audioContext.currentTime+.06);
+    gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+.45);
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+    osc.start();
+    osc.stop(audioContext.currentTime+.5);
+    i++;
+  }
+  note();
+  musicTimer=setInterval(note,550);
+}
+
+/* INIT */
+updateAccount();
+renderLeaderboard();
+</script>
+
+</body>
+</html>
